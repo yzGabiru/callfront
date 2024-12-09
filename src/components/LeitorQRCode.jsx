@@ -25,7 +25,7 @@ function LeitorQRCode({ onScan }) {
         setCameraId(rearCamera.deviceId);
       } else if (videoDevices.length > 0) {
         // Caso contrário, usar a primeira câmera encontrada
-        setCameraId(videoDevices[1].deviceId);
+        setCameraId(videoDevices[2].deviceId);
       }
     };
 
