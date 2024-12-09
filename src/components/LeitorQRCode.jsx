@@ -24,6 +24,7 @@ function LeitorQRCode({ onScan }) {
         style={previewStyle}
         onError={handleError}
         onScan={handleScan}
+        facingMode="environment" // Define que a câmera traseira será utilizada
       />
     </div>
   );
