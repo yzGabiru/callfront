@@ -8,24 +8,30 @@ function LeitorQRCode({ onScan }) {
   useEffect(() => {
     // Verificar as câmeras disponíveis
     const getCameras = async () => {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter(
-        (device) => device.kind === "videoinput"
-      );
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(
+          (device) => device.kind === "videoinput"
+        );
 
-      // Tentar selecionar a câmera traseira
-      const rearCamera = videoDevices.find(
-        (device) =>
-          device.label.toLowerCase().includes("back") ||
-          device.label.toLowerCase().includes("environment")
-      );
+        console.log("Dispositivos de vídeo:", videoDevices); // Adicionando log para depuração
 
-      // Se encontrar a câmera traseira, configurar o id
-      if (rearCamera) {
-        setCameraId(rearCamera.deviceId);
-      } else if (videoDevices.length > 0) {
-        // Caso contrário, usar a primeira câmera encontrada
-        setCameraId(videoDevices[2].deviceId);
+        // Tentar selecionar a câmera traseira
+        const rearCamera = videoDevices.find(
+          (device) =>
+            device.label.toLowerCase().includes("back") ||
+            device.label.toLowerCase().includes("environment")
+        );
+
+        // Se encontrar a câmera traseira, configurar o id
+        if (rearCamera) {
+          setCameraId(rearCamera.deviceId);
+        } else if (videoDevices.length > 0) {
+          // Caso contrário, usar a primeira câmera encontrada
+          setCameraId(videoDevices[0].deviceId);
+        }
+      } catch (err) {
+        console.error("Erro ao acessar dispositivos de mídia:", err);
       }
     };
 
