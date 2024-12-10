@@ -20,6 +20,7 @@ function ValidarPresenca() {
   const dataHoje = `${ano}-${mes}-${dia}`;
 
   useEffect(() => {
+    console.log(scanResult);
     if (scanResult) {
       async function buscarUsuario() {
         try {
@@ -47,6 +48,7 @@ function ValidarPresenca() {
             data.presencaRetornada &&
             data.presencaRetornada.data ===
               new Date().toLocaleDateString("pt-BR");
+
           setTemPresenca(presencaHoje);
 
           setSuccess(
@@ -88,7 +90,6 @@ function ValidarPresenca() {
 
       const data = await response.json();
       setPresenca(data.presencaAtualizada); // Atualiza o estado com os novos dados
-      setSuccess("Presença atualizada com sucesso!");
       setTemPresenca(true);
       setStatusPresenca(newStatus);
     } catch (error) {
@@ -157,7 +158,7 @@ function ValidarPresenca() {
               </>
             ) : (
               <p className="text-green-500 text-sm mt-2 font-bold">
-                Presença já registrada para o dia!
+                Presença Atualizada!
               </p>
             )}
           </div>
