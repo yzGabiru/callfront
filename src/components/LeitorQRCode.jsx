@@ -9,30 +9,35 @@ function LeitorQRCode({ onScan }) {
     // Função para configurar a câmera traseira
     const getCameraStream = async () => {
       try {
+        // Obtém todos os dispositivos de mídia
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoDevices = devices.filter(
           (device) => device.kind === "videoinput"
         );
 
-        // Encontrar a câmera traseira
-        const rearCamera = videoDevices.find(
-          (device) =>
-            device.label.toLowerCase().includes("back") ||
-            device.label.toLowerCase().includes("environment")
+        console.log("Dispositivos de vídeo detectados:", videoDevices); // Log de todos os dispositivos de vídeo
+
+        // Vamos buscar qualquer dispositivo que tenha 'environment' no nome, que é a câmera traseira
+        const rearCamera = videoDevices.find((device) =>
+          device.label.toLowerCase().includes("environment")
         );
 
-        // Se a câmera traseira for encontrada, usar o deviceId para pegar o stream
+        console.log("Câmera traseira encontrada:", rearCamera);
+
+        // Se encontramos a câmera traseira, usar seu deviceId
         if (rearCamera) {
           const stream = await navigator.mediaDevices.getUserMedia({
             video: { deviceId: rearCamera.deviceId },
           });
           setCameraStream(stream);
         } else if (videoDevices.length > 0) {
-          // Caso não tenha câmera traseira, use a primeira câmera disponível
+          // Se não encontrou a câmera traseira, tenta a primeira câmera disponível
           const stream = await navigator.mediaDevices.getUserMedia({
             video: { deviceId: videoDevices[0].deviceId },
           });
           setCameraStream(stream);
+        } else {
+          console.error("Nenhuma câmera disponível.");
         }
       } catch (err) {
         console.error("Erro ao acessar dispositivos de mídia:", err);
@@ -41,7 +46,7 @@ function LeitorQRCode({ onScan }) {
 
     getCameraStream();
 
-    // Limpeza do stream ao desmontar o componente
+    // Limpeza do stream quando o componente for desmontado
     return () => {
       if (cameraStream) {
         const tracks = cameraStream.getTracks();
