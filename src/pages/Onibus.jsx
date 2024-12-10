@@ -44,7 +44,9 @@ function Onibus() {
       setOnibus([...onibus, onibus.find((bus) => bus.id_onibus === onibusId)]);
     }
   }
+
   //funcao adicionar onibus
+  // eslint-disable-next-line no-unused-vars
   async function clickAdicionarOnibus(nome, descricao) {
     const novoOnibus = {
       id_onibus: v4(),
@@ -116,7 +118,7 @@ function Onibus() {
           </h1>
         </div>
         {/* <DetalhesOnibus /> */}
-        <RegistrarOnibus clickAdicionarOnibus={clickAdicionarOnibus} />
+        {/* <RegistrarOnibus clickAdicionarOnibus={clickAdicionarOnibus} /> */}
         <BuscarOnibus onibus={onibus} clickDeletarOnibus={clickDeletarOnibus} />
       </div>
     </div>
