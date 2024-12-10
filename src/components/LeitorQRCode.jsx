@@ -7,9 +7,13 @@ function LeitorQRCode({ onScan }) {
   const [result, setResult] = useState("No result");
 
   // Função chamada quando o QR code é escaneado
-  const handleScan = (data) => {
-    if (data) {
-      const qrText = data.text || data;
+  const handleScan = (result) => {
+    if (result) {
+      console.log("Dados recebidos do QR Code:", result);
+      const qrText =
+        result.text?.trim() ||
+        new TextDecoder().decode(result.rawBytes) ||
+        "Dados não encontrados";
       setResult(qrText);
       if (onScan) {
         onScan(qrText);
@@ -17,7 +21,7 @@ function LeitorQRCode({ onScan }) {
     }
   };
 
-  // Função chamada em caso de erro
+  // eslint-disable-next-line no-unused-vars
   const handleError = (err) => {
     console.error("Erro ao acessar a câmera:", err);
   };
@@ -28,9 +32,10 @@ function LeitorQRCode({ onScan }) {
     width: 320,
   };
 
+  // Restrições para acessar a câmera
   const videoConstraints = {
     video: {
-      facingMode: { exact: "environment" }, // Solicita explicitamente a câmera traseira
+      facingMode: { ideal: "environment" }, // Solicita explicitamente a câmera traseira
     },
   };
 
@@ -39,7 +44,13 @@ function LeitorQRCode({ onScan }) {
       <QrScanner
         delay={300} // Intervalo entre as verificações do QR code
         style={previewStyle} // Define o estilo do componente
-        onError={handleError} // Função para tratar erros
+        onError={(err) => {
+          console.error(
+            "Erro ao acessar a câmera, tentando a câmera frontal:",
+            err
+          );
+          videoConstraints.video.facingMode = { ideal: "user" }; // Fallback para câmera frontal
+        }}
         onScan={handleScan} // Função para tratar a leitura do QR code
         constraints={videoConstraints} // Restrições para uso da câmera
       />
