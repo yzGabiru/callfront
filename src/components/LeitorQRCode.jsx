@@ -44,6 +44,7 @@ function LeitorQRCode({ onScan }) {
     // Limpeza do stream ao desmontar o componente
     return () => {
       if (cameraStream) {
+        console.log(cameraStream);
         const tracks = cameraStream.getTracks();
         tracks.forEach((track) => track.stop());
       }
