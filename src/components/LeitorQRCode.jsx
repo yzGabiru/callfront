@@ -31,7 +31,7 @@ function LeitorQRCode({ onScan }) {
   // Restrições para acessar a câmera
   const videoConstraints = {
     video: {
-      facingMode: "front", // Usa a câmera traseira (ideal para escanear QR codes)
+      facingMode: "rear", // Usa a câmera traseira (ideal para escanear QR codes)
     },
   };
 
