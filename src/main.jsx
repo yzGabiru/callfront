@@ -15,11 +15,7 @@ import ProtegerRotas from "./components/ProtegerRotas.jsx";
 let router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <ProtegerRotas>
-        <App />
-      </ProtegerRotas>
-    ),
+    element: <App />,
   },
   {
     path: "/onibus",
