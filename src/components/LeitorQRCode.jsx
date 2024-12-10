@@ -3,40 +3,52 @@ import { useEffect, useState } from "react";
 import QrScanner from "react-qr-scanner";
 
 function LeitorQRCode({ onScan }) {
-  const [cameraId, setCameraId] = useState(null);
+  const [cameraStream, setCameraStream] = useState(null);
 
   useEffect(() => {
-    // Verificar as câmeras disponíveis
-    const getCameras = async () => {
+    // Função para configurar a câmera traseira
+    const getCameraStream = async () => {
       try {
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoDevices = devices.filter(
           (device) => device.kind === "videoinput"
         );
 
-        console.log("Dispositivos de vídeo:", videoDevices); // Adicionando log para depuração
-
-        // Tentar selecionar a câmera traseira
+        // Encontrar a câmera traseira
         const rearCamera = videoDevices.find(
           (device) =>
             device.label.toLowerCase().includes("back") ||
             device.label.toLowerCase().includes("environment")
         );
 
-        // Se encontrar a câmera traseira, configurar o id
+        // Se a câmera traseira for encontrada, usar o deviceId para pegar o stream
         if (rearCamera) {
-          setCameraId(rearCamera.deviceId);
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { deviceId: rearCamera.deviceId },
+          });
+          setCameraStream(stream);
         } else if (videoDevices.length > 0) {
-          // Caso contrário, usar a primeira câmera encontrada
-          setCameraId(videoDevices[0].deviceId);
+          // Caso não tenha câmera traseira, use a primeira câmera disponível
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { deviceId: videoDevices[0].deviceId },
+          });
+          setCameraStream(stream);
         }
       } catch (err) {
         console.error("Erro ao acessar dispositivos de mídia:", err);
       }
     };
 
-    getCameras();
-  }, []);
+    getCameraStream();
+
+    // Limpeza do stream ao desmontar o componente
+    return () => {
+      if (cameraStream) {
+        const tracks = cameraStream.getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+    };
+  }, [cameraStream]);
 
   const handleScan = (data) => {
     if (data) {
@@ -55,14 +67,13 @@ function LeitorQRCode({ onScan }) {
 
   return (
     <div className="space-y-4 p-20 bg-slate-200 rounded-md shadow flex flex-col">
-      {cameraId ? (
+      {cameraStream ? (
         <QrScanner
           delay={300}
           style={previewStyle}
           onError={handleError}
           onScan={handleScan}
-          facingMode="environment"
-          deviceId={cameraId} // Passa o id da câmera selecionada
+          videoStream={cameraStream} // Passa o stream para o QrScanner
         />
       ) : (
         <p>Procurando por câmeras...</p>
