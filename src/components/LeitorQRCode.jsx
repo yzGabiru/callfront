@@ -3,13 +3,12 @@ import QrScanner from "react-qr-scanner";
 import PropTypes from "prop-types";
 
 function LeitorQRCode({ onScan }) {
-  // eslint-disable-next-line no-unused-vars
   const [result, setResult] = useState("No result");
 
   // Função chamada quando o QR code é escaneado
   const handleScan = (data) => {
     if (data) {
-      const qrText = data.text || data;
+      const qrText = data.text || data; // Garante que o texto seja obtido corretamente
       setResult(qrText);
       if (onScan) {
         onScan(qrText);
@@ -31,12 +30,12 @@ function LeitorQRCode({ onScan }) {
   // Restrições para acessar a câmera
   const videoConstraints = {
     video: {
-      facingMode: "rear", // Usa a câmera traseira (ideal para escanear QR codes)
+      facingMode: { exact: "environment" }, // Solicita explicitamente a câmera traseira
     },
   };
 
   return (
-    <div className="space-y-4 p-20 bg-slate-200 rounded-md shadow flex flex-col">
+    <div>
       <QrScanner
         delay={300} // Intervalo entre as verificações do QR code
         style={previewStyle} // Define o estilo do componente
@@ -44,6 +43,7 @@ function LeitorQRCode({ onScan }) {
         onScan={handleScan} // Função para tratar a leitura do QR code
         constraints={videoConstraints} // Restrições para uso da câmera
       />
+      <p>Resultado: {result}</p> {/* Mostra o resultado na tela */}
     </div>
   );
 }
