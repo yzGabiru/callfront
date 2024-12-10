@@ -5,44 +5,69 @@ import Onibus from "./pages/Onibus.jsx";
 import DetalhesOnibus from "./components/DetalhesOnibus.jsx";
 import Login from "./pages/Login.jsx";
 import App from "./App.jsx";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CadastroUsuario from "./pages/CadastroUsuario.jsx";
 import CadastroPresenca from "./pages/CadastroPresenca.jsx";
 import Presenca from "./pages/Presenca.jsx";
 import ValidarPresenca from "./pages/ValidarPresenca.jsx";
+import ProtegerRotas from "./components/ProtegerRotas.jsx";
 
 let router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <ProtegerRotas>
+        <App />
+      </ProtegerRotas>
+    ),
   },
   {
     path: "/onibus",
-    element: <Onibus />,
+    element: (
+      <ProtegerRotas>
+        <Onibus />
+      </ProtegerRotas>
+    ),
   },
   {
     path: "/onibus/buscar",
-    element: <DetalhesOnibus />,
+    element: (
+      <ProtegerRotas>
+        <DetalhesOnibus />
+      </ProtegerRotas>
+    ),
   },
   {
     path: "/usuario/cadastro",
-    element: <CadastroUsuario />,
+    element: <CadastroUsuario />, // Rota pública
   },
   {
     path: "/usuario/login",
-    element: <Login />,
+    element: <Login />, // Rota pública
   },
   {
     path: "/presenca/cadastro",
-    element: <CadastroPresenca />,
+    element: (
+      <ProtegerRotas>
+        <CadastroPresenca />
+      </ProtegerRotas>
+    ),
   },
   {
     path: "/presenca/buscar",
-    element: <Presenca />,
+    element: (
+      <ProtegerRotas>
+        <Presenca />
+      </ProtegerRotas>
+    ),
   },
   {
     path: "/presenca/validar",
-    element: <ValidarPresenca />,
+    element: (
+      <ProtegerRotas>
+        <ValidarPresenca />
+      </ProtegerRotas>
+    ),
   },
 ]);
 
