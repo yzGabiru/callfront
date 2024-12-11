@@ -11,6 +11,8 @@ function ChamadaAlunos() {
 
   const navigate = useNavigate();
 
+  //o aluno que vai e volta ta dando como presente na volta tambem mesmo estando na ida
+
   // Função para buscar alunos
   const fetchAlunos = async () => {
     try {

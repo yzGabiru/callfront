@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 function Onibus() {
   const [onibus, setOnibus] = useState([]);
-  // eslint-disable-next-line no-unused-vars
+
   const [error, setError] = useState("");
   const token = localStorage.getItem("authToken");
 
@@ -45,7 +45,7 @@ function Onibus() {
   }
 
   //funcao adicionar onibus
-  // eslint-disable-next-line no-unused-vars
+
   async function clickAdicionarOnibus(nome, descricao) {
     const novoOnibus = {
       id_onibus: v4(),
