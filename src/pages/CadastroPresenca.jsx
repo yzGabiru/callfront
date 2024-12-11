@@ -20,6 +20,8 @@ function CadastroPresenca() {
 
   const dataHoje = `${ano}-${mes}-${dia}`;
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   //funcao adicionar onibus
   async function clickAdicionarPresenca(
     id_usuario,
@@ -42,16 +44,13 @@ function CadastroPresenca() {
 
     // Faz a chamada para a API
     try {
-      const response = await fetch(
-        "https://callback-ivory.vercel.app/presenca/adicionar",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(novaPresenca),
-        }
-      );
+      const response = await fetch(`${API_URL}/presenca/adicionar`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(novaPresenca),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();

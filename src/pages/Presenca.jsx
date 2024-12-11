@@ -6,15 +6,13 @@ function Presenca() {
   const [error, setError] = useState("");
   const [usuarios, setUsuarios] = useState([]);
 
+  const API_URL = import.meta.env.VITE_API_URL;
   useEffect(() => {
     async function buscarPresencas() {
       try {
-        const response = await fetch(
-          "https://callback-ivory.vercel.app/presenca/buscar",
-          {
-            method: "GET",
-          }
-        );
+        const response = await fetch(`${API_URL}/presenca/buscar`, {
+          method: "GET",
+        });
 
         if (!response.ok) {
           throw new Error("Erro ao buscar presenças");
@@ -31,7 +29,7 @@ function Presenca() {
         const usuariosData = await Promise.all(
           usuariosUnicos.map(async (id_usuario) => {
             const userResponse = await fetch(
-              `https://callback-ivory.vercel.app/usuario/buscarUsuario?id_usuario=${id_usuario}`,
+              `${API_URL}/usuario/buscarUsuario?id_usuario=${id_usuario}`,
               { method: "GET" }
             );
 

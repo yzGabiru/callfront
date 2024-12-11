@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import RegistrarOnibus from "../components/RegistrarOnibus";
 import BuscarOnibus from "../components/BuscarOnibus";
 import { useEffect, useState } from "react";
@@ -11,6 +12,7 @@ function Onibus() {
   const [error, setError] = useState("");
   const token = localStorage.getItem("authToken");
 
+  const API_URL = import.meta.env.VITE_API_URL;
   //funcao deletar onibus
   async function clickDeletarOnibus(onibusId) {
     const novosOnibus = onibus.filter(
@@ -19,17 +21,14 @@ function Onibus() {
 
     // Faz a chamada para a API
     try {
-      const response = await fetch(
-        "https://callback-ivory.vercel.app/onibus/deletar",
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ id_onibus: onibusId }),
-        }
-      );
+      const response = await fetch(`${API_URL}/onibus/deletar`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id_onibus: onibusId }),
+      });
 
       if (!response.ok) {
         throw new Error("Erro ao deletar ônibus");

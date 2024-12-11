@@ -14,6 +14,7 @@ function CadastroUsuario() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const API_URL = import.meta.env.VITE_API_URL;
   //funcao adicionar onibus
   async function clickAdicionarusuario(
     nome,
@@ -37,16 +38,13 @@ function CadastroUsuario() {
 
     // Faz a chamada para a API
     try {
-      const response = await fetch(
-        "https://callback-ivory.vercel.app/usuario/registro",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(novoUsuario),
-        }
-      );
+      const response = await fetch(`${API_URL}/usuario/registro`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(novoUsuario),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();

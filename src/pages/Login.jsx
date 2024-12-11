@@ -19,17 +19,17 @@ function Login() {
     setLogin([...login, novoLogin]);
 
     // Faz a chamada para a API
+
+    const API_URL = import.meta.env.VITE_API_URL;
+
     try {
-      const response = await fetch(
-        "https://callback-ivory.vercel.app/usuario/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(novoLogin),
-        }
-      );
+      const response = await fetch(`${API_URL}/usuario/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(novoLogin),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -42,7 +42,14 @@ function Login() {
       //armazenar o token de acesso no local storage
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("userId", data.userId);
-      navigate("/onibus");
+      localStorage.setItem("e_admin", data.e_admin);
+
+      // Redireciona com base no privilégio
+      if (data.e_admin) {
+        navigate("/admin"); // Página de admin
+      } else {
+        navigate("/onibus"); // Página normal
+      }
 
       //pra usar ele
       //   const token = localStorage.getItem("authToken");

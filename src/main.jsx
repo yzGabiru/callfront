@@ -11,6 +11,7 @@ import CadastroPresenca from "./pages/CadastroPresenca.jsx";
 import Presenca from "./pages/Presenca.jsx";
 import ValidarPresenca from "./pages/ValidarPresenca.jsx";
 import ProtegerRotas from "./components/ProtegerRotas.jsx";
+import PaginaAdmin from "./pages/PaginaAdmin.jsx";
 
 let router = createBrowserRouter([
   {
@@ -62,6 +63,14 @@ let router = createBrowserRouter([
     element: (
       <ProtegerRotas>
         <ValidarPresenca />
+      </ProtegerRotas>
+    ),
+  },
+  {
+    path: "/admin",
+    element: (
+      <ProtegerRotas>
+        <PaginaAdmin />,
       </ProtegerRotas>
     ),
   },

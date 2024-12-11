@@ -19,13 +19,15 @@ function ValidarPresenca() {
 
   const dataHoje = `${ano}-${mes}-${dia}`;
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     console.log(scanResult);
     if (scanResult) {
       async function buscarUsuario() {
         try {
           const response = await fetch(
-            `https://callback-ivory.vercel.app/presenca/verificar/${scanResult}/${userId}`,
+            `${API_URL}/presenca/verificar/${scanResult}/${userId}`,
             {
               method: "GET",
               headers: {
@@ -66,22 +68,19 @@ function ValidarPresenca() {
   }, [scanResult, userId]);
   const atualizarPresenca = async (newStatus) => {
     try {
-      const response = await fetch(
-        "https://callback-ivory.vercel.app/presenca/editar",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id_usuario: userId,
-            id_onibus: scanResult,
-            status_presenca: "PRESENTE",
-            data: dataHoje,
-            status: newStatus,
-          }),
-        }
-      );
+      const response = await fetch(`${API_URL}/presenca/editar`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id_usuario: userId,
+          id_onibus: scanResult,
+          status_presenca: "PRESENTE",
+          data: dataHoje,
+          status: newStatus,
+        }),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
