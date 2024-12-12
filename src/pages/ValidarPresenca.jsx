@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 function ValidarPresenca() {
   const [presenca, setPresenca] = useState(null);
   const [scanResult, setScanResult] = useState("");
-  const [statusPresenca, setStatusPresenca] = useState(""); // Status da presença
+  const [vai, setVai] = useState(false); // Estado para "vai"
+  const [volta, setVolta] = useState(false); // Estado para "volta"
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [temPresenca, setTemPresenca] = useState(false); // Flag para verificar se há presença
@@ -45,7 +46,6 @@ function ValidarPresenca() {
           console.log(data);
           setPresenca(data.presencaRetornada);
 
-          // Verifica se há presença registrada para o dia
           const presencaHoje =
             data.presencaRetornada &&
             data.presencaRetornada.data ===
@@ -53,9 +53,14 @@ function ValidarPresenca() {
 
           setTemPresenca(presencaHoje);
 
-          setSuccess(
-            presencaHoje ? "Presença carregada!" : "Presença registrada!"
-          );
+          if (presencaHoje) {
+            setVai(data.presencaRetornada.vai);
+            setVolta(data.presencaRetornada.volta);
+            setSuccess("Presença carregada!");
+          } else {
+            setSuccess("Presença registrada!");
+          }
+
           setError("");
         } catch (error) {
           console.error("Erro na API:", error);
@@ -66,7 +71,8 @@ function ValidarPresenca() {
       buscarUsuario();
     }
   }, [scanResult, userId]);
-  const atualizarPresenca = async (newStatus) => {
+
+  const atualizarPresenca = async () => {
     try {
       const response = await fetch(`${API_URL}/presenca/editar`, {
         method: "PUT",
@@ -76,9 +82,9 @@ function ValidarPresenca() {
         body: JSON.stringify({
           id_usuario: userId,
           id_onibus: scanResult,
-          status_presenca: "PRESENTE",
+          vai,
+          volta,
           data: dataHoje,
-          status: newStatus,
         }),
       });
 
@@ -90,7 +96,8 @@ function ValidarPresenca() {
       const data = await response.json();
       setPresenca(data.presencaAtualizada); // Atualiza o estado com os novos dados
       setTemPresenca(true);
-      setStatusPresenca(newStatus);
+      setSuccess("Presença atualizada com sucesso!");
+      setError("");
     } catch (error) {
       console.error("Erro na API:", error);
       setError(error.message);
@@ -114,42 +121,37 @@ function ValidarPresenca() {
           </h1>
         </div>
         <div className="flex justify-center relative mb-6">
-          {/* Passa a função setScanResult como onScan para o LeitorQRCode */}
           <LeitorQRCode onScan={setScanResult} />
         </div>
 
-        {/* Verifique se o 'usuario' existe antes de renderizar os dados */}
         {presenca && (
           <div className="bg-white p-4 rounded-md shadow">
-            <h2 className="text-xl font-bold">Presenca encontrada:</h2>
+            <h2 className="text-xl font-bold">Presença encontrada:</h2>
             <p>Dia: {presenca.dia_semana}</p>
-            <p>Status: {presenca.status}</p>
 
-            {/* Se não tiver presença registrada para o dia, permite editar o status */}
             {!temPresenca ? (
               <>
-                <div>
-                  <label
-                    htmlFor="statusPresenca"
-                    className="block text-sm font-medium"
-                  >
-                    Status de Presença
-                  </label>
-                  <select
-                    id="statusPresenca"
-                    value={statusPresenca}
-                    onChange={(e) => setStatusPresenca(e.target.value)}
-                    className="mt-2 block w-full border border-gray-300 p-2 rounded-md"
-                  >
-                    <option value="so_vai">Só vai</option>
-                    <option value="so_volta">Só Volta</option>
-                    <option value="vai_volta">Vai e Volta</option>
-                  </select>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium">Vai</label>
+                  <input
+                    type="checkbox"
+                    checked={vai}
+                    onChange={(e) => setVai(e.target.checked)}
+                    className="mt-1"
+                  />
+                </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium">Volta</label>
+                  <input
+                    type="checkbox"
+                    checked={volta}
+                    onChange={(e) => setVolta(e.target.checked)}
+                    className="mt-1"
+                  />
                 </div>
 
-                {/* Botão para atualizar a presença */}
                 <button
-                  onClick={() => atualizarPresenca(statusPresenca)}
+                  onClick={atualizarPresenca}
                   className="mt-4 bg-blue-500 text-white p-2 rounded-md"
                 >
                   Atualizar Presença
@@ -163,14 +165,12 @@ function ValidarPresenca() {
           </div>
         )}
 
-        {/* Exibe o erro se houver */}
         {error && (
           <p className="text-red-500 text-sm mt-2 font-bold text-center">
             {error}
           </p>
         )}
 
-        {/* Exibe a mensagem de sucesso se houver */}
         {success && (
           <p className="text-green-500 text-sm mt-2 font-bold text-center">
             {success}

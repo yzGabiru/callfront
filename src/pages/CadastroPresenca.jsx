@@ -9,7 +9,8 @@ function CadastroPresenca() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [data_chamada, setDataChamada] = useState("");
-  const [status, setStatus] = useState("");
+  const [vai, setVai] = useState("");
+  const [volta, setVolta] = useState("");
   const [status_presenca, setPresenca] = useState("");
 
   const hoje = new Date();
@@ -26,13 +27,15 @@ function CadastroPresenca() {
   async function clickAdicionarPresenca(
     id_usuario,
     id_onibus,
-    status,
+    vai,
+    volta,
     data_chamada
   ) {
     const novaPresenca = {
       id_usuario,
       id_onibus,
-      status,
+      vai,
+      volta,
       data: data_chamada,
       status_presenca: "AUSENTE",
     };
@@ -104,9 +107,20 @@ function CadastroPresenca() {
           />
           <select
             className="border border-slate-300 outline-slate-400 px-4 py-2 rounded-md"
-            value={status}
+            value={(vai, volta)}
             onChange={(event) => {
-              setStatus(event.target.value);
+              if (event.target.value === "so_vai") {
+                setVai(true);
+                setVolta(false);
+              }
+              if (event.target.value === "so_volta") {
+                setVai(false);
+                setVolta(true);
+                if (event.target.value === "vai_volta") {
+                  setVai(true);
+                  setVolta(true);
+                }
+              }
             }}
           >
             <option value="so_vai">Só vai</option>
@@ -126,7 +140,7 @@ function CadastroPresenca() {
           <button
             className="bg-slate-500 text-white px-4 py-2 rounded-md font-medium"
             onClick={() => {
-              if (!data_chamada || !status) {
+              if (!data_chamada || !vai || !volta) {
                 alert("Preencha todos os campos");
               }
               if (data_chamada < dataHoje) {
@@ -141,7 +155,8 @@ function CadastroPresenca() {
               clickAdicionarPresenca(
                 id_usuario,
                 id_onibus,
-                status,
+                vai,
+                volta,
                 data_chamada,
                 status_presenca
               );
