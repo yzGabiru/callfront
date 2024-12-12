@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 // import { useState } from "react";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import Presenca from "./Presenca";
 
 function CadastroPresenca() {
   const [presenca, setNovaPresenca] = useState([]);
@@ -12,6 +14,7 @@ function CadastroPresenca() {
   const [vai, setVai] = useState("");
   const [volta, setVolta] = useState("");
   const [status_presenca, setPresenca] = useState("");
+  const token = localStorage.getItem("authToken");
 
   const hoje = new Date();
 
@@ -81,6 +84,45 @@ function CadastroPresenca() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
+  async function buscarPresencas() {
+    const userId = pegarIdUser();
+
+    try {
+      const response = await fetch(`${API_URL}/presenca/buscar/${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.erro || "Erro desconhecido");
+      }
+      const data = await response.json();
+
+      if (!data.presencas) {
+        setError("Você não tem presenças registradas");
+        console.log("nenhuma presenca registrada");
+      }
+      // Transformar os dados no formato esperado
+      // Ao buscar as presenças, ao transformar a data:
+      const presencasFormatadas = data.presencas.map((item) => {
+        const dataChamada = new Date(item.data_chamada); // Recebe a data do banco
+        const dataLocal = dataChamada.toLocaleDateString("pt-BR", {
+          timeZone: "UTC", // Garantir que a data seja tratada como UTC
+        });
+        return {
+          data: dataLocal,
+          vai: item.vai,
+          volta: item.volta,
+        };
+      });
+
+      setNovaPresenca(presencasFormatadas); // Atualizar estado com os dados formatados
+    } catch (err) {
+      console.error("ocorreu um erro ao buscar os usuarios", err);
+    }
+  }
   return (
     <div className="w-screen h-screen bg-slate-500 flex justify-center p-6">
       <div className="w-[500px] space-y-4">
@@ -107,26 +149,39 @@ function CadastroPresenca() {
           />
           <select
             className="border border-slate-300 outline-slate-400 px-4 py-2 rounded-md"
-            value={(vai, volta)}
+            value={
+              vai && volta
+                ? "vai_volta"
+                : vai
+                ? "so_vai"
+                : volta
+                ? "so_volta"
+                : ""
+            }
             onChange={(event) => {
-              if (event.target.value === "so_vai") {
+              const value = event.target.value;
+              console.log(value);
+              if (value === "so_vai") {
                 setVai(true);
                 setVolta(false);
-              }
-              if (event.target.value === "so_volta") {
+              } else if (value === "so_volta") {
                 setVai(false);
                 setVolta(true);
-                if (event.target.value === "vai_volta") {
-                  setVai(true);
-                  setVolta(true);
-                }
+              } else if (value === "vai_volta") {
+                setVai(true);
+                setVolta(true);
+              } else {
+                setVai(false);
+                setVolta(false);
               }
             }}
           >
+            <option value="">Selecione uma opção</option>
             <option value="so_vai">Só vai</option>
             <option value="so_volta">Só volta</option>
             <option value="vai_volta">Vai e volta</option>
           </select>
+
           {/* <select
             className="border border-slate-300 outline-slate-400 px-4 py-2 rounded-md"
             value={status_presenca}
@@ -140,8 +195,9 @@ function CadastroPresenca() {
           <button
             className="bg-slate-500 text-white px-4 py-2 rounded-md font-medium"
             onClick={() => {
-              if (!data_chamada || !vai || !volta) {
-                alert("Preencha todos os campos");
+              if (!data_chamada || (vai === false && volta === false)) {
+                alert("Preencha todos os campos corretamente.");
+                return;
               }
               if (data_chamada < dataHoje) {
                 alert("Data de chamada não pode ser menor que a data atual");
@@ -152,6 +208,7 @@ function CadastroPresenca() {
               const id_usuario = pegarIdUser();
               const id_onibus = searchParams.get("onibus");
 
+              console.log(vai, volta);
               clickAdicionarPresenca(
                 id_usuario,
                 id_onibus,
@@ -181,6 +238,7 @@ function CadastroPresenca() {
             </p>
           )}
         </div>
+        <Presenca presencas={presenca} buscarPresencas={buscarPresencas} />
       </div>
     </div>
   );

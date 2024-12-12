@@ -23,7 +23,6 @@ function ValidarPresenca() {
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    console.log(scanResult);
     if (scanResult) {
       async function buscarUsuario() {
         try {
@@ -41,9 +40,8 @@ function ValidarPresenca() {
             const errorData = await response.json();
             throw new Error(errorData.erro || "Erro desconhecido");
           }
-
           const data = await response.json();
-          console.log(data);
+          console.log("dados verificar presenca: ", data);
           setPresenca(data.presencaRetornada);
 
           const presencaHoje =
@@ -72,6 +70,7 @@ function ValidarPresenca() {
     }
   }, [scanResult, userId]);
 
+  //mudar esse campo de atualizar presença para o cadastrar presença, aqui ficar só um botao de presença verificada
   const atualizarPresenca = async () => {
     try {
       const response = await fetch(`${API_URL}/presenca/editar`, {

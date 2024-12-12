@@ -1,70 +1,57 @@
-import { useState, useEffect } from "react";
-import BuscarPresencas from "../components/BuscarPresencas";
+import PropTypes from "prop-types";
+import { useEffect } from "react";
 
-function Presenca() {
-  const [presencas, setPresencas] = useState([]);
-  const [error, setError] = useState("");
-  const [usuarios, setUsuarios] = useState([]);
-
-  const API_URL = import.meta.env.VITE_API_URL;
+function Presenca({ presencas, buscarPresencas }) {
   useEffect(() => {
-    async function buscarPresencas() {
-      try {
-        const response = await fetch(`${API_URL}/presenca/buscar`, {
-          method: "GET",
-        });
-
-        if (!response.ok) {
-          throw new Error("Erro ao buscar presenças");
-        }
-
-        const data = await response.json();
-        console.log("Dados de presenças recebidos:", data);
-        setPresencas(data.presencas || []);
-
-        // Buscar dados de usuários associados às presenças
-        const usuariosUnicos = [
-          ...new Set(data.presencas.map((p) => p.id_usuario)),
-        ];
-        const usuariosData = await Promise.all(
-          usuariosUnicos.map(async (id_usuario) => {
-            const userResponse = await fetch(
-              `${API_URL}/usuario/buscarUsuario?id_usuario=${id_usuario}`,
-              { method: "GET" }
-            );
-
-            if (!userResponse.ok) {
-              throw new Error("Erro ao buscar usuários");
-            }
-
-            const userData = await userResponse.json();
-            return { id_usuario, nome: userData.usuario };
-          })
-        );
-
-        setUsuarios(usuariosData);
-      } catch (error) {
-        console.error("Erro na requisição:", error);
-        setError(error.message);
-      }
-    }
-
     buscarPresencas();
-  }, []);
+
+    const interval = setInterval(() => {
+      buscarPresencas();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [buscarPresencas]);
 
   return (
-    <div className="w-screen h-screen bg-slate-500 flex justify-center p-6">
-      <div className="w-[500px] space-y-4">
-        <h1 className="text-3xl text-slate-100 font-bold text-center">
-          Presenças
-        </h1>
-        <BuscarPresencas presencas={presencas} usuarios={usuarios} />
-        {error && (
-          <p className="text-red-500 text-center">Ocorreu um erro: {error}</p>
-        )}
-      </div>
+    <div className="space-y-4 bg-slate-100 p-4 rounded-md shadow">
+      <h2 className="text-xl font-bold text-slate-700">Presenças</h2>
+      {presencas.length === 0 ? (
+        <p className="text-slate-500">Nenhuma presença registrada ainda.</p>
+      ) : (
+        <ul className="space-y-2">
+          {presencas.map((presenca, index) => (
+            <li
+              key={index}
+              className="flex justify-between items-center bg-slate-200 p-3 rounded-md"
+            >
+              <span>
+                <strong>Data:</strong> {presenca.data}
+              </span>
+              <span>
+                <strong>Vai:</strong> {presenca.vai ? "Sim" : "Não"}
+              </span>
+              <span>
+                <strong>Volta:</strong> {presenca.volta ? "Sim" : "Não"}
+              </span>
+              <button>Editar</button>
+              <button>Deletar</button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
+
+Presenca.propTypes = {
+  presencas: PropTypes.arrayOf(
+    PropTypes.shape({
+      data: PropTypes.string.isRequired,
+      vai: PropTypes.bool.isRequired,
+      volta: PropTypes.bool.isRequired,
+    })
+  ),
+  buscarPresencas: PropTypes.func,
+};
 
 export default Presenca;

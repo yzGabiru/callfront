@@ -9,7 +9,7 @@ function LeitorQRCode({ onScan }) {
   // Função chamada quando o QR code é escaneado
   const handleScan = (result) => {
     if (result) {
-      console.log("Dados recebidos do QR Code:", result);
+      console.log("Dados recebidos do QR Code!");
       const qrText =
         result.text?.trim() ||
         new TextDecoder().decode(result.rawBytes) ||
