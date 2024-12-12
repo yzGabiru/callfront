@@ -72,7 +72,8 @@ function ChamadaAlunos() {
     return {
       ...aluno,
       presente: presenca ? presenca.status_presenca : false, // Definir presença com base no status_presenca
-      tipo: presenca ? presenca.status : "indefinido", // Tipo de presença (so_vai, vai_volta, etc.)
+      vai: presenca ? presenca.vai : false, // Status de "vai"
+      volta: presenca ? presenca.volta : false, // Status de "volta"
     };
   });
 
@@ -103,10 +104,11 @@ function ChamadaAlunos() {
         </div>
         <ul className="space-y-4">
           {alunosComPresenca
-            .filter((aluno) =>
-              view === "going"
-                ? aluno.tipo === "vai_volta" || aluno.tipo === "so_vai"
-                : aluno.tipo === "vai_volta" || aluno.tipo === "so_volta"
+            .filter(
+              (aluno) =>
+                view === "going"
+                  ? aluno.vai // Filtra para mostrar os alunos que vão
+                  : aluno.volta // Filtra para mostrar os alunos que voltam
             )
             .map((aluno) => (
               <li
@@ -116,6 +118,20 @@ function ChamadaAlunos() {
                 }`}
               >
                 <span className="text-lg text-black">{aluno.nome}</span>
+                <div className="flex space-x-2">
+                  {/* Quadradinho para 'vai' */}
+                  <div
+                    className={`w-4 h-4 rounded-full ${
+                      aluno.vai ? "bg-green-500" : "bg-gray-400"
+                    }`}
+                  ></div>
+                  {/* Quadradinho para 'volta' */}
+                  <div
+                    className={`w-4 h-4 rounded-full ${
+                      aluno.volta ? "bg-blue-500" : "bg-gray-400"
+                    }`}
+                  ></div>
+                </div>
                 <button
                   className={`px-4 py-2 rounded text-white ${
                     aluno.presente ? "bg-green-500" : "bg-red-500"

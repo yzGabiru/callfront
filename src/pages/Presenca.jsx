@@ -33,8 +33,12 @@ function Presenca({ presencas, buscarPresencas }) {
               <span>
                 <strong>Volta:</strong> {presenca.volta ? "Sim" : "Não"}
               </span>
-              <button>Editar</button>
-              <button>Deletar</button>
+              <button className="bg-slate-500 text-white px-4 py-2 rounded-md font-medium">
+                Editar
+              </button>
+              <button className="bg-slate-500 text-white px-4 py-2 rounded-md font-medium">
+                Deletar
+              </button>
             </li>
           ))}
         </ul>
