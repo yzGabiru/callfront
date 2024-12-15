@@ -54,24 +54,50 @@ function ChamadaAlunos() {
     }, 5000);
 
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [API_URL, token]);
 
-  const mudarStatusPresenca = (id_usuario) => {
-    setPresencas((prevPresencas) => {
-      return prevPresencas.map((presenca) => {
-        if (presenca.id_usuario === id_usuario) {
-          return { ...presenca, status_presenca: !presenca.status_presenca };
-        }
-        return presenca;
+  const mudarStatusPresenca = async (id_presenca, status) => {
+    let novoStatus = "AUSENTE";
+    if (status === false) {
+      novoStatus = "PRESENTE";
+    }
+    console.log(id_presenca, novoStatus);
+    try {
+      const response = await fetch(`${API_URL}/presenca/mudarstatus`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id_presenca,
+          status_presenca: novoStatus,
+        }),
       });
-    });
-  };
+      if (!response.ok) {
+        throw new Error("Erro ao mudar status da presença");
+      }
 
+      const presencaAtualizada = await response.json();
+      setPresencas((prevPresencas) =>
+        prevPresencas.map((presenca) =>
+          presenca.id_presenca === id_presenca
+            ? {
+                ...presenca,
+                status_presenca: presencaAtualizada.status_presenca,
+              }
+            : presenca
+        )
+      );
+    } catch (error) {
+      console.error("Erro ao mudar status da presença:", error);
+    }
+  };
   const alunosComPresenca = alunos.map((aluno) => {
     const presenca = presencas.find((p) => p.id_usuario === aluno.id_usuario);
     return {
       ...aluno,
+      id_presenca: presenca ? presenca.id_presenca : false,
       presente: presenca ? presenca.status_presenca : false, // Definir presença com base no status_presenca
       vai: presenca ? presenca.vai : false, // Status de "vai"
       volta: presenca ? presenca.volta : false, // Status de "volta"
@@ -137,7 +163,9 @@ function ChamadaAlunos() {
                   className={`px-4 py-2 rounded text-white ${
                     aluno.presente ? "bg-green-500" : "bg-red-500"
                   }`}
-                  onClick={() => mudarStatusPresenca(aluno.id_usuario)}
+                  onClick={() =>
+                    mudarStatusPresenca(aluno.id_presenca, aluno.presente)
+                  }
                 >
                   {aluno.presente ? "Presente" : "Ausente"}
                 </button>
