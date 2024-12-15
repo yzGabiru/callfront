@@ -11,8 +11,6 @@ function ChamadaAlunos() {
 
   const navigate = useNavigate();
 
-  //o aluno que vai e volta ta dando como presente na volta tambem mesmo estando na ida
-
   // Função para buscar alunos
   const fetchAlunos = async () => {
     try {
@@ -56,12 +54,11 @@ function ChamadaAlunos() {
     return () => clearInterval(interval);
   }, [API_URL, token]);
 
-  const mudarStatusPresenca = async (id_presenca, status) => {
+  const mudarStatusPresenca = async (id_presenca, status, tipo) => {
     let novoStatus = "AUSENTE";
     if (status === false) {
       novoStatus = "PRESENTE";
     }
-    console.log(id_presenca, novoStatus);
     try {
       const response = await fetch(`${API_URL}/presenca/mudarstatus`, {
         method: "PUT",
@@ -72,6 +69,7 @@ function ChamadaAlunos() {
         body: JSON.stringify({
           id_presenca,
           status_presenca: novoStatus,
+          tipo, // Passa o tipo (ida ou volta)
         }),
       });
       if (!response.ok) {
@@ -93,12 +91,14 @@ function ChamadaAlunos() {
       console.error("Erro ao mudar status da presença:", error);
     }
   };
+
   const alunosComPresenca = alunos.map((aluno) => {
     const presenca = presencas.find((p) => p.id_usuario === aluno.id_usuario);
     return {
       ...aluno,
       id_presenca: presenca ? presenca.id_presenca : false,
-      presente: presenca ? presenca.status_presenca : false, // Definir presença com base no status_presenca
+      presente_ida: presenca ? presenca.presenca_ida : false,
+      presente_volta: presenca ? presenca.presenca_volta : false,
       vai: presenca ? presenca.vai : false, // Status de "vai"
       volta: presenca ? presenca.volta : false, // Status de "volta"
     };
@@ -141,7 +141,14 @@ function ChamadaAlunos() {
               <li
                 key={aluno.id_usuario}
                 className={`flex justify-between items-center p-4 rounded shadow ${
-                  aluno.presente ? "bg-green-100" : "bg-red-100"
+                  // Definir a cor de fundo separadamente para a ida e volta
+                  view === "going"
+                    ? aluno.presente_ida
+                      ? "bg-green-100"
+                      : "bg-red-100"
+                    : aluno.presente_volta
+                    ? "bg-green-100"
+                    : "bg-red-100"
                 }`}
               >
                 <span className="text-lg text-black">{aluno.nome}</span>
@@ -149,26 +156,50 @@ function ChamadaAlunos() {
                   {/* Quadradinho para 'vai' */}
                   <div
                     className={`w-4 h-4 rounded-full ${
-                      aluno.vai ? "bg-green-500" : "bg-gray-400"
+                      aluno.vai ? "bg-green-500" : "bg-red-400"
                     }`}
                   ></div>
                   {/* Quadradinho para 'volta' */}
                   <div
                     className={`w-4 h-4 rounded-full ${
-                      aluno.volta ? "bg-blue-500" : "bg-gray-400"
+                      aluno.volta ? "bg-green-500" : "bg-red-400"
                     }`}
                   ></div>
                 </div>
-                <button
-                  className={`px-4 py-2 rounded text-white ${
-                    aluno.presente ? "bg-green-500" : "bg-red-500"
-                  }`}
-                  onClick={() =>
-                    mudarStatusPresenca(aluno.id_presenca, aluno.presente)
-                  }
-                >
-                  {aluno.presente ? "Presente" : "Ausente"}
-                </button>
+                {/* Botão para alterar presença de ida */}
+                {view === "going" && (
+                  <button
+                    className={`px-4 py-2 rounded text-white ${
+                      aluno.presente_ida ? "bg-green-500" : "bg-red-500"
+                    }`}
+                    onClick={() =>
+                      mudarStatusPresenca(
+                        aluno.id_presenca,
+                        aluno.presente_ida,
+                        "ida"
+                      )
+                    }
+                  >
+                    {aluno.presente_ida ? "Presente" : "Ausente"}
+                  </button>
+                )}
+                {/* Botão para alterar presença de volta */}
+                {view === "returning" && (
+                  <button
+                    className={`px-4 py-2 rounded text-white ${
+                      aluno.presente_volta ? "bg-green-500" : "bg-red-500"
+                    }`}
+                    onClick={() =>
+                      mudarStatusPresenca(
+                        aluno.id_presenca,
+                        aluno.presente_volta,
+                        "volta"
+                      )
+                    }
+                  >
+                    {aluno.presente_volta ? "Presente" : "Ausente"}
+                  </button>
+                )}
               </li>
             ))}
         </ul>

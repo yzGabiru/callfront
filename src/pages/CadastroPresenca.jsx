@@ -13,7 +13,6 @@ function CadastroPresenca() {
   const [data_chamada, setDataChamada] = useState("");
   const [vai, setVai] = useState("");
   const [volta, setVolta] = useState("");
-  const [status_presenca, setPresenca] = useState("");
   const token = localStorage.getItem("authToken");
 
   const hoje = new Date();
@@ -40,7 +39,8 @@ function CadastroPresenca() {
       vai,
       volta,
       data: data_chamada,
-      status_presenca: "AUSENTE",
+      presenca_ida: false,
+      presenca_volta: false,
     };
 
     // Atualiza localmente
@@ -177,17 +177,6 @@ function CadastroPresenca() {
             <option value="so_volta">Só volta</option>
             <option value="vai_volta">Vai e volta</option>
           </select>
-
-          {/* <select
-            className="border border-slate-300 outline-slate-400 px-4 py-2 rounded-md"
-            value={status_presenca}
-            onChange={(event) => {
-              setPresenca(event.target.value);
-            }}
-          >
-            <option value="PRESENTE">Presente</option>
-            <option value="AUSENTE">Ausente</option>
-          </select> */}
           <button
             className="bg-slate-500 text-white px-4 py-2 rounded-md font-medium"
             onClick={() => {
@@ -198,7 +187,6 @@ function CadastroPresenca() {
               if (data_chamada < dataHoje) {
                 alert("Data de chamada não pode ser menor que a data atual");
                 setDataChamada("");
-                setPresenca("");
                 return;
               }
               const id_usuario = pegarIdUser();
@@ -209,11 +197,9 @@ function CadastroPresenca() {
                 id_onibus,
                 vai,
                 volta,
-                data_chamada,
-                status_presenca
+                data_chamada
               );
               setDataChamada("");
-              setPresenca("");
               setSuccess("");
             }}
           >
