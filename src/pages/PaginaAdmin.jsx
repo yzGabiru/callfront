@@ -54,6 +54,7 @@ function ChamadaAlunos() {
     }, 5000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [API_URL, token]);
 
   const mudarStatusPresenca = (id_usuario) => {
