@@ -20,11 +20,11 @@ function Presenca({ presencas, buscarPresencas }) {
     const mes = String(hoje.getMonth() + 1).padStart(2, "0");
     const dia = String(hoje.getDate()).padStart(2, "0");
 
-    const dataHoje = `${ano}-${mes}-${dia}`;
+    const dataHoje = `${dia}-${mes}-${ano}`;
 
     return presencas.filter((presenca) => {
       const dataPresenca = presenca.data;
-      return dataPresenca <= dataHoje;
+      return dataPresenca >= dataHoje;
     });
   };
 

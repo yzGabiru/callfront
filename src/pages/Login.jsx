@@ -46,7 +46,7 @@ function Login() {
 
       // Redireciona com base no privilégio
       if (data.e_admin) {
-        navigate("/admin"); // Página de admin
+        navigate("/admin/onibus"); // Página de admin
       } else {
         navigate("/onibus"); // Página normal
       }

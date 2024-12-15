@@ -12,6 +12,7 @@ import Presenca from "./pages/Presenca.jsx";
 import ValidarPresenca from "./pages/ValidarPresenca.jsx";
 import ProtegerRotas from "./components/ProtegerRotas.jsx";
 import PaginaAdmin from "./pages/PaginaAdmin.jsx";
+import OnibusAdmin from "./pages/OnibusAdmin.jsx";
 
 let router = createBrowserRouter([
   {
@@ -23,6 +24,14 @@ let router = createBrowserRouter([
     element: (
       <ProtegerRotas>
         <Onibus />
+      </ProtegerRotas>
+    ),
+  },
+  {
+    path: "/admin/onibus",
+    element: (
+      <ProtegerRotas>
+        <OnibusAdmin />
       </ProtegerRotas>
     ),
   },

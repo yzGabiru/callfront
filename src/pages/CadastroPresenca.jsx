@@ -83,14 +83,17 @@ function CadastroPresenca() {
 
   async function buscarPresencas() {
     const userId = pegarIdUser();
-
+    const id_onibus = searchParams.get("onibus");
     try {
-      const response = await fetch(`${API_URL}/presenca/buscar/${userId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${API_URL}/presenca/buscar/${userId}/${id_onibus}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.erro || "Erro desconhecido");

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 function ChamadaAlunos() {
   const [alunos, setAlunos] = useState([]);
@@ -10,6 +11,9 @@ function ChamadaAlunos() {
   const API_URL = import.meta.env.VITE_API_URL;
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  //aqui ta o id do oniibus pra fazer as verificações
+  const id_onibus = searchParams.get("onibus");
 
   // Função para buscar alunos
   const fetchAlunos = async () => {

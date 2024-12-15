@@ -116,7 +116,11 @@ function Onibus() {
         </div>
         {/* <DetalhesOnibus /> */}
         {/* <RegistrarOnibus clickAdicionarOnibus={clickAdicionarOnibus} /> */}
-        <BuscarOnibus onibus={onibus} clickDeletarOnibus={clickDeletarOnibus} />
+        <BuscarOnibus
+          onibus={onibus}
+          contexto="default"
+          /*clickDeletarOnibus={clickDeletarOnibus}*/
+        />
       </div>
     </div>
   );
