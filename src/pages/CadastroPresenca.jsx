@@ -42,11 +42,9 @@ function CadastroPresenca() {
       data: data_chamada,
       status_presenca: "AUSENTE",
     };
-    console.log(novaPresenca);
 
     // Atualiza localmente
     setNovaPresenca([...presenca, novaPresenca]);
-    console.log("Enviando para API:", novaPresenca);
 
     // Faz a chamada para a API
     try {
@@ -64,7 +62,6 @@ function CadastroPresenca() {
       }
 
       const data = await response.json();
-      console.log("Registro bem-sucedido:", data);
       setError("");
       setSuccess("Presença adicionada com sucesso!");
     } catch (error) {
@@ -160,7 +157,6 @@ function CadastroPresenca() {
             }
             onChange={(event) => {
               const value = event.target.value;
-              console.log(value);
               if (value === "so_vai") {
                 setVai(true);
                 setVolta(false);
@@ -208,7 +204,6 @@ function CadastroPresenca() {
               const id_usuario = pegarIdUser();
               const id_onibus = searchParams.get("onibus");
 
-              console.log(vai, volta);
               clickAdicionarPresenca(
                 id_usuario,
                 id_onibus,

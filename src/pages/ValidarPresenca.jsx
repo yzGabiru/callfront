@@ -68,6 +68,7 @@ function ValidarPresenca() {
 
       buscarUsuario();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scanResult, userId]);
 
   //mudar esse campo de atualizar presença para o cadastrar presença, aqui ficar só um botao de presença verificada

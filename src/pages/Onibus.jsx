@@ -54,7 +54,6 @@ function Onibus() {
     };
     // Atualiza localmente
     setOnibus([...onibus, novoOnibus]);
-    console.log(novoOnibus);
 
     // Faz a chamada para a API
     try {
@@ -76,7 +75,6 @@ function Onibus() {
       }
 
       const data = await response.json();
-      console.log("Registro bem-sucedido:", data);
       setError("");
     } catch (error) {
       console.error("Erro na API:", error);
