@@ -54,6 +54,7 @@ function ChamadaAlunos() {
   useEffect(() => {
     fetchAlunos();
     fetchPresencas();
+    //ds
 
     const interval = setInterval(() => {
       fetchPresencas();
