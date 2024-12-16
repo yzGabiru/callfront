@@ -31,7 +31,6 @@ function CadastroUsuario() {
       confirmarSenha: confirmarSenha,
       numeroCelular: numeroCelular,
     };
-    console.log(novoUsuario);
 
     // Atualiza localmente
     setUsuario([...usuario, novoUsuario]);

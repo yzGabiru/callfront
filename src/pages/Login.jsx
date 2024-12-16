@@ -37,7 +37,6 @@ function Login() {
       }
 
       const data = await response.json();
-      console.log("Login bem-sucedido:", data);
       setError("");
       //armazenar o token de acesso no local storage
       localStorage.setItem("authToken", data.token);
