@@ -22,7 +22,7 @@ function BuscarOnibus({
   function verPresencaClick(onibus) {
     const query = new URLSearchParams();
     query.set("onibus", onibus.id_onibus);
-    navigate(`/admin?${query.toString()}`);
+    navigate(`/admin/onibus?${query.toString()}`);
   }
 
   return (
@@ -60,7 +60,9 @@ function BuscarOnibus({
           {contexto === "admin" && (
             <button
               className="bg-blue-500 p-2 rounded-md text-white"
-              onClick={() => verPresencaClick(bus)}
+              onClick={() => {
+                verPresencaClick(bus);
+              }}
             >
               Gerenciar
             </button>

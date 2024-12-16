@@ -7,27 +7,30 @@ function ValidarPresenca() {
   const [error, setError] = useState("");
   const userId = localStorage.getItem("userId");
 
-  const hoje = new Date();
-  const ano = hoje.getFullYear();
-  const mes = String(hoje.getMonth() + 1).padStart(2, "0");
-  const dia = String(hoje.getDate()).padStart(2, "0");
-  const dataHoje = `${ano}-${mes}-${dia}`;
+  // const hoje = new Date();
+  // const ano = hoje.getFullYear();
+  // const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+  // const dia = String(hoje.getDate()).padStart(2, "0");
+  // const dataHoje = `${ano}-${mes}-${dia}`;
 
   const API_URL = import.meta.env.VITE_API_URL;
 
   const atualizarPresenca = async (scanResult) => {
     try {
-      const response = await fetch(`${API_URL}/presenca/editar`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id_usuario: userId,
-          id_onibus: scanResult,
-          data: dataHoje,
-        }),
-      });
+      const response = await fetch(
+        `${API_URL}/presenca/verificar/${scanResult}/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id_usuario: userId,
+            id_onibus: scanResult,
+            /*data: dataHoje,*/
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();

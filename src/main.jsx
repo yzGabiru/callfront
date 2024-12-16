@@ -28,7 +28,7 @@ let router = createBrowserRouter([
     ),
   },
   {
-    path: "/admin/onibus",
+    path: "/admin",
     element: (
       <ProtegerRotas>
         <OnibusAdmin />
@@ -76,7 +76,7 @@ let router = createBrowserRouter([
     ),
   },
   {
-    path: "/admin",
+    path: "/admin/onibus",
     element: (
       <ProtegerRotas>
         <PaginaAdmin />,

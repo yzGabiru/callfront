@@ -14,6 +14,7 @@ function ChamadaAlunos() {
   const [searchParams] = useSearchParams();
   //aqui ta o id do oniibus pra fazer as verificações
   const id_onibus = searchParams.get("onibus");
+  // const id_usuario = localStorage.getItem("userId");
 
   // Função para buscar alunos
   const fetchAlunos = async () => {
@@ -34,12 +35,15 @@ function ChamadaAlunos() {
   // Função para buscar presenças
   const fetchPresencas = async () => {
     try {
-      const response = await fetch(`${API_URL}/presenca/buscar`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${API_URL}/presenca/buscarUsuariosOnibus/${id_onibus}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = await response.json();
       setPresencas(data.presencas || []);
     } catch (error) {
