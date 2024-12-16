@@ -63,9 +63,9 @@ function ChamadaAlunos() {
   }, [API_URL, token]);
 
   const mudarStatusPresenca = async (id_presenca, status, tipo) => {
-    let novoStatus = "AUSENTE";
+    let novoStatus = false;
     if (status === false) {
-      novoStatus = "PRESENTE";
+      novoStatus = true;
     }
     try {
       const response = await fetch(`${API_URL}/presenca/mudarstatus`, {
